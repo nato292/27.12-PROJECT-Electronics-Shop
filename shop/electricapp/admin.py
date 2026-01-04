@@ -32,7 +32,6 @@ class OrderItemInline(admin.TabularInline):
     extra = 1
 
 @admin.register(Order)
-
 class OrderAdmin(admin.ModelAdmin):
     list_display = ('id', 'user', 'is_paid', 'total_price', 'created_at')
     list_filter = ('is_paid', 'created_at')
@@ -41,7 +40,6 @@ class OrderAdmin(admin.ModelAdmin):
     readonly_fields = ('created_at',)
 
 @admin.register(ShippingAddress)
-
 class ShippingAddressAdmin(admin.ModelAdmin):
     list_display = ('order', 'city', 'address', 'postal_code')
     search_fields = ('city', 'address', 'postal_code')
