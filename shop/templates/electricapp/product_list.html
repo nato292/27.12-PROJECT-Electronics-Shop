@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Каталог товарів</title>
+</head>
+<body>
+    <h1>Каталог товарів</h1>
+
+    {% for product in products %}
+        <div>
+            <h2>{{ product.name }}</h2>
+            <p>Ціна: {{ product.price }} грн</p>
+
+            {% if product.photo %}
+                <img src="{{ product.photo.url }}" width="200">
+            {% endif %}
+
+            <a href="{% url 'product_detail' product.pk %}">
+                Детальніше
+            </a>
+        </div>
+        <hr>
+    {% empty %}
+        <p>Товарів поки немає</p>
+    {% endfor %}
+</body>
+</html>
