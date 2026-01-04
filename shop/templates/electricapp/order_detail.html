@@ -1,0 +1,67 @@
+<h1>Замовлення №{{ order.id }}</h1>
+
+<hr>
+
+<p><strong>Дата створення:</strong>
+    {{ order.created_at|date:"d.m.Y H:i" }}
+</p>
+
+<p><strong>Статус:</strong>
+    {{ order.get_status_display }}
+</p>
+
+<p><strong>Оплачено:</strong>
+    {% if order.is_paid %}
+        Так
+    {% else %}
+        Ні
+    {% endif %}
+</p>
+
+<p><strong>Загальна сума:</strong>
+    {{ order.total_price }} ₴
+</p>
+
+<hr>
+
+<h2>Товари у замовленні</h2>
+
+{% if items %}
+<table border="1" cellpadding="6">
+    <tr>
+        <th>Товар</th>
+        <th>Кількість</th>
+        <th>Ціна</th>
+        <th>Сума</th>
+    </tr>
+
+    {% for item in items %}
+    <tr>
+        <td>{{ item.product.name }}</td>
+        <td>{{ item.quantity }}</td>
+        <td>{{ item.price }} ₴</td>
+        <td>{{ item.total_price }} ₴</td>
+    </tr>
+    {% endfor %}
+</table>
+{% else %}
+<p>Товари відсутні</p>
+{% endif %}
+
+<hr>
+
+<h2>Адреса доставки</h2>
+
+{% if shipping %}
+<p>
+    {{ shipping.city }}<br>
+    {{ shipping.address }}<br>
+    {{ shipping.postal_code }}
+</p>
+{% else %}
+<p>Адреса доставки не вказана</p>
+{% endif %}
+
+<hr>
+
+<a href="{% url 'my_orders' %}">← Повернутися до моїх замовлень</a>

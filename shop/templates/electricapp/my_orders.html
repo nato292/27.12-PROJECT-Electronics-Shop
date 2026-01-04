@@ -1,0 +1,33 @@
+<h1>Мої замовлення</h1>
+
+{% if orders %}
+<table border="1" cellpadding="8" cellspacing="0">
+    <thead>
+        <tr>
+            <th>№</th>
+            <th>Дата</th>
+            <th>Статус</th>
+            <th>Сума</th>
+            <th>Дії</th>
+        </tr>
+    </thead>
+
+    <tbody>
+        {% for order in orders %}
+        <tr>
+            <td>#{{ order.id }}</td>
+            <td>{{ order.created_at|date:"d.m.Y H:i" }}</td>
+            <td>{{ order.get_status_display }}</td>
+            <td>{{ order.total_price }} ₴</td>
+            <td>
+                <a href="{% url 'order_detail' order.id %}">
+                    Переглянути
+                </a>
+            </td>
+        </tr>
+        {% endfor %}
+    </tbody>
+</table>
+{% else %}
+<p>У вас ще немає замовлень.</p>
+{% endif %}
