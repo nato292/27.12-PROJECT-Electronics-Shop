@@ -1,0 +1,27 @@
+{% extends "electricapp/base.html" %}
+
+{% block content %}
+<h1>Кошик</h1>
+
+{% if cart_items %}
+    <ul>
+        {% for item in cart_items %}
+            <li>
+                {{ item.product.name }} —
+                {{ item.quantity }} шт —
+                {{ item.total_price }} грн
+
+                <a href="{% url 'cart_remove' item.product.id %}">
+                    Видалити
+                </a>
+            </li>
+        {% endfor %}
+    </ul>
+
+    <p><strong>Загальна сума:</strong> {{ total_price }} грн</p>
+
+    <a href="{% url 'cart_clear' %}">🗑 Очистити кошик</a>
+{% else %}
+    <p>Кошик порожній</p>
+{% endif %}
+{% endblock %}

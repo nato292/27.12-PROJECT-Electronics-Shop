@@ -5,6 +5,7 @@ from django.contrib.auth.models import User
 
 from .models import Product, UserProfile, Order
 from .forms import ShippingAddressForm
+from .cart import SessionCart
 
 
 # =========================
@@ -25,6 +26,35 @@ def product_detail(request, pk):
     return render(request, 'electricapp/product_detail.html', {
         'product': product
     })
+
+
+# =========================
+# КОШИК
+# =========================
+def cart_detail(request):
+    cart = SessionCart(request)
+    return render(request, 'electricapp/cart.html', {
+        'cart_items': cart.get_products(),
+        'total_price': cart.get_total_price()
+    })
+
+
+def cart_add(request, product_id):
+    cart = SessionCart(request)
+    cart.add(product_id)
+    return redirect('cart')
+
+
+def cart_remove(request, product_id):
+    cart = SessionCart(request)
+    cart.remove(product_id)
+    return redirect('cart')
+
+
+def cart_clear(request):
+    cart = SessionCart(request)
+    cart.clear()
+    return redirect('cart')
 
 
 # =========================
@@ -141,3 +171,4 @@ def order_detail(request, order_id):
 #http://127.0.0.1:8000/admin/
 #http://127.0.0.1:8000/profile/ Релог + Другой акк зайти
 #http://127.0.0.1:8000/my-orders/
+#http://127.0.0.1:8000/cart/
