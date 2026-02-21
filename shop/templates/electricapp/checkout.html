@@ -1,0 +1,49 @@
+{% extends "electricapp/base.html" %}
+{% block title %}Оформлення замовлення{% endblock %}
+
+{% block content %}
+
+<h1 class="page-title">Оформлення замовлення</h1>
+
+<div class="checkout-container">
+
+    <div class="checkout-form">
+        <h2>Доставка</h2>
+
+        <form method="post">
+            {% csrf_token %}
+
+            <label>Місто</label>
+            <input type="text" name="city" required>
+
+            <label>Адреса</label>
+            <input type="text" name="address" required>
+
+            <label>Поштовий індекс</label>
+            <input type="text" name="postal_code" required>
+
+            <button type="submit" class="btn checkout-btn">
+                Підтвердити замовлення
+            </button>
+        </form>
+    </div>
+
+    <div class="checkout-summary">
+        <h2>Ваше замовлення</h2>
+
+        {% for item in cart_items %}
+        <div class="summary-item">
+            <span>{{ item.product.name }}</span>
+            <span>{{ item.total_price }} ₴</span>
+        </div>
+        {% endfor %}
+
+        <div class="summary-total">
+            <span>Разом:</span>
+            <strong>{{ total_price }} ₴</strong>
+        </div>
+    </div>
+
+</div>
+
+{% endblock %}

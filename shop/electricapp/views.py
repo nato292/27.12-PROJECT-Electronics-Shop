@@ -3,7 +3,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth import authenticate, login, logout
 from django.contrib.auth.models import User
 
-from .models import Product, UserProfile, Order
+from .models import Product, UserProfile, Order, OrderItem, ShippingAddress
 from .forms import ShippingAddressForm
 from .cart import SessionCart
 
@@ -56,6 +56,41 @@ def cart_clear(request):
     cart.clear()
     return redirect('cart')
 
+def checkout(request):
+    cart = SessionCart(request)
+
+    total_price = cart.get_total_price()
+    cart_items = cart
+
+    if request.method == "POST":
+        order = Order.objects.create(
+            user=request.user,
+            total_price=total_price
+        )
+
+        for item in cart:
+            OrderItem.objects.create(
+                order=order,
+                product=item["product"],
+                quantity=item["quantity"],
+                price=item['product'].price
+            )
+
+        ShippingAddress.objects.create(
+            order=order,
+            city=request.POST["city"],
+            address=request.POST["address"],
+            postal_code=request.POST["postal_code"]
+        )
+
+        cart.clear()
+
+        return redirect("my_orders")
+
+    return render(request, "electricapp/checkout.html", {
+        "cart_items": cart_items,
+        "total_price": total_price
+    })
 
 # =========================
 # Вхід
@@ -161,6 +196,15 @@ def order_detail(request, order_id):
         'items': items,
         'shipping': getattr(order, 'shipping_address', None),
     })
+
+@login_required
+def cancel_order(request, pk):
+    order = get_object_or_404(Order, pk=pk, user=request.user)
+
+    if request.method == "POST":
+        order.delete()
+
+    return redirect('my_orders')
 
 
 

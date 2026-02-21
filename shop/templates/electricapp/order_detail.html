@@ -1,67 +1,57 @@
-<h1>Замовлення №{{ order.id }}</h1>
+{% extends "electricapp/base.html" %}
+{% block title %}Замовлення{% endblock %}
 
-<hr>
+{% block content %}
 
-<p><strong>Дата створення:</strong>
-    {{ order.created_at|date:"d.m.Y H:i" }}
-</p>
+<h1 class="page-title">Замовлення №{{ order.id }}</h1>
 
-<p><strong>Статус:</strong>
-    {{ order.get_status_display }}
-</p>
+<div class="order-detail-container">
 
-<p><strong>Оплачено:</strong>
-    {% if order.is_paid %}
-        Так
-    {% else %}
-        Ні
-    {% endif %}
-</p>
+    <div class="order-info">
+        <p><strong>Дата:</strong> {{ order.created_at|date:"d.m.Y H:i" }}</p>
+        <p><strong>Статус:</strong> {{ order.get_status_display }}</p>
+        <p><strong>Оплачено:</strong> {% if order.is_paid %}Так{% else %}Ні{% endif %}</p>
+        <p><strong>Сума:</strong> {{ order.total_price }} ₴</p>
 
-<p><strong>Загальна сума:</strong>
-    {{ order.total_price }} ₴
-</p>
+        {% if order.status == "new" and not order.is_paid %}
+        <form method="post" action="{% url 'cancel_order' order.id %}">
+            {% csrf_token %}
+            <button type="submit" class="btn-cancel">
+                Скасувати замовлення
+        </button>
+    </form>
+        {% endif %}
 
-<hr>
+    </div>
 
-<h2>Товари у замовленні</h2>
+    <div class="order-items">
+        <h2>Товари</h2>
 
-{% if items %}
-<table border="1" cellpadding="6">
-    <tr>
-        <th>Товар</th>
-        <th>Кількість</th>
-        <th>Ціна</th>
-        <th>Сума</th>
-    </tr>
+        {% for item in items %}
+        <div class="order-item">
+            <span>{{ item.product.name }}</span>
+            <span>{{ item.quantity }} × {{ item.price }} ₴</span>
+            <strong>{{ item.total_price }} ₴</strong>
+        </div>
+        {% endfor %}
+    </div>
 
-    {% for item in items %}
-    <tr>
-        <td>{{ item.product.name }}</td>
-        <td>{{ item.quantity }}</td>
-        <td>{{ item.price }} ₴</td>
-        <td>{{ item.total_price }} ₴</td>
-    </tr>
-    {% endfor %}
-</table>
-{% else %}
-<p>Товари відсутні</p>
-{% endif %}
+    <div class="order-shipping">
+        <h2>Доставка</h2>
 
-<hr>
+        {% if shipping %}
+            <p>{{ shipping.city }}</p>
+            <p>{{ shipping.address }}</p>
+            <p>{{ shipping.postal_code }}</p>
+        {% else %}
+            <p>Адреса доставки не вказана</p>
+        {% endif %}
+    </div>
 
-<h2>Адреса доставки</h2>
+</div>
 
-{% if shipping %}
-<p>
-    {{ shipping.city }}<br>
-    {{ shipping.address }}<br>
-    {{ shipping.postal_code }}
-</p>
-{% else %}
-<p>Адреса доставки не вказана</p>
-{% endif %}
+<a href="{% url 'my_orders' %}" class="btn-outline">
+    ← Повернутися
+</a>
 
-<hr>
-
-<a href="{% url 'my_orders' %}">← Повернутися до моїх замовлень</a>
+{% endblock %}

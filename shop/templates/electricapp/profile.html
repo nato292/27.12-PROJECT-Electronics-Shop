@@ -1,7 +1,30 @@
-<h2>Профіль користувача</h2>
+{% extends "electricapp/base.html" %}
+{% block title %}Профіль{% endblock %}
 
-<p>Username: {{ request.user.username }}</p>
-<p>Email: {{ request.user.email }}</p>
+{% block content %}
 
-<p>Телефон: {{ request.user.userprofile.phone }}</p>
-<p>Місто: {{ request.user.userprofile.city }}</p>
+<h1 class="page-title">Профіль</h1>
+
+<div class="profile-card">
+    <div class="profile-item">
+        <span>Username</span>
+        <strong>{{ request.user.username }}</strong>
+    </div>
+
+    <div class="profile-item">
+        <span>Email</span>
+        <strong>{{ request.user.email }}</strong>
+    </div>
+
+    <div class="profile-item">
+        <span>Телефон</span>
+        <strong>{{ request.user.userprofile.phone }}</strong>
+    </div>
+
+    <div class="profile-item">
+        <span>Місто</span>
+        <strong>{{ request.user.userprofile.city }}</strong>
+    </div>
+</div>
+
+{% endblock %}
